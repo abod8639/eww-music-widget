@@ -1,10 +1,8 @@
-/* Cyberpunk Theme */
 
 /* Variables */
 $bg-color: rgba(10, 5, 30, 0.85);
-$primary-neon: #00ffff; /* Cyan */
-$secondary-neon: #ff00ff; /* Magenta */
-// $secondary-neon: #bf2bff; /* Magenta */
+$primary-neon: #00ffff;   //* Cyan    */
+$secondary-neon: #ff00ff; //* Magenta */
 $text-color: #e0e0e0;
 $font-family: "JetBrains Mono Nerd Font";
 
@@ -75,7 +73,6 @@ $font-family: "JetBrains Mono Nerd Font";
   opacity: 0.75;
   color: $text-color;
   margin-bottom: 10px;
-    // background-color: rgba($primary-neon, 0.1);
 }
 
 .progress-bar {
@@ -100,7 +97,6 @@ $font-family: "JetBrains Mono Nerd Font";
 }
 
 .volume_bar {
-  // padding: 0 1px;
   margin-left: 0px;
 }
 
@@ -138,7 +134,6 @@ $font-family: "JetBrains Mono Nerd Font";
 
 .vol_icon:hover {
   text-shadow: 0 0 10px rgba($secondary-neon, 1);
-  // opacity: 0.6;
 }
 
 .cava-visualizer {

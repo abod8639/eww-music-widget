@@ -28,7 +28,7 @@ fi
 if [ -f "$DEFAULT_COVER" ]; then
     echo "$DEFAULT_COVER"
 else
-    echo "$HOME/Downloads/jpg(34).jpeg"
+    echo "assets/DEFAULTImage.jpeg"
 fi
 
 exit 0

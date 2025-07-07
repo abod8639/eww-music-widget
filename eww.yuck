@@ -24,7 +24,8 @@
        box :class "controls" :orientation "h"
         (button :onclick "playerctl previous" "󰒮")
         (button :onclick "playerctl play-pause" {current-status == "Playing" ? "󰏤" : "󰐊"})
-        (button :onclick "playerctl next" "󰒭"))
+        (button :onclick "playerctl next" "󰒭")
+      )
 
       (label :class "position" :text "${current-position}")
       (scale :class "progress-bar" :min 0 :max {song-length} :value {song-position} :onchange "playerctl position {}")
@@ -37,7 +38,6 @@
          (button :onclick "~/.config/eww/music-widget/volumecontroller.sh -o m" :class "vol_icon" :style "color: ${volume_mute == 'true' ? '#ff0000' : '#00ffff'};" {volume_mute == "true" ? "󰝟" : ""})
          (scale :flipped true :orientation "v"  :max 101 :min 0 :value volume_percent :onchange "~/.config/eww/music-widget/volumecontroller.sh -o s {}" )
        )
-
   )
 
 )
