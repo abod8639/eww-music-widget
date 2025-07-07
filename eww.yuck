@@ -7,7 +7,7 @@
 (defpoll current-cover :interval "0.5s" "~/.config/eww/music-widget/get-cover.sh")
 (defpoll volume_percent :interval "0.5s" "~/.config/eww/music-widget/volumecontroller.sh -o g")
 (defpoll volume_mute :interval "0.5s" "pamixer --get-mute")
-(deflisten cava :initial "" "bash /home/dexter/.config/eww/music-widget/cava.sh")
+(deflisten cava :initial "" "bash $HOME/.config/eww/music-widget/cava.sh")
 
 (
   defwidget music-widget []
