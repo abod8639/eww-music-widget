@@ -1,0 +1,51 @@
+(defpoll current-song :interval "0.5s" "playerctl metadata --format '{{title}}'")
+(defpoll current-artist :interval "0.5s" "playerctl metadata --format '{{artist}}'")
+(defpoll current-status :interval "0.5s" "playerctl status")
+(defpoll current-position :interval "0.5s" "playerctl position | awk '{printf \"%d:%02d\", int($1/60), int($1%60)}'")
+(defpoll song-position :interval "0.5s" "playerctl position")
+(defpoll song-length :interval "0.5s" "playerctl metadata mpris:length | awk '{print $1 / 1000000}'")
+(defpoll current-cover :interval "0.5s" "~/.config/eww/music-widget/get-cover.sh")
+(defpoll volume_percent :interval "0.5s" "~/.config/eww/music-widget/volumecontroller.sh -o g")
+(defpoll volume_mute :interval "0.5s" "pamixer --get-mute")
+(deflisten cava :initial "" "bash /home/dexter/.config/eww/music-widget/cava.sh")
+
+(
+  defwidget music-widget []
+  (
+    box :class "music-widget" :orientation "h" :space-evenly false
+
+    (box :class "cover-art" :style "background-image: url('${current-cover}');")
+    (
+      box :class "music-info" :orientation "v" :space-evenly false
+      (label :class "song-title" :text "${current-song}" :limit-width 25)
+      (label :class "artist" :text "${current-artist}" :limit-width 25)
+      
+      (
+       box :class "controls" :orientation "h"
+        (button :onclick "playerctl previous" "󰒮")
+        (button :onclick "playerctl play-pause" {current-status == "Playing" ? "󰏤" : "󰐊"})
+        (button :onclick "playerctl next" "󰒭"))
+
+      (label :class "position" :text "${current-position}")
+      (scale :class "progress-bar" :min 0 :max {song-length} :value {song-position} :onchange "playerctl position {}")
+      (label :class "cava-visualizer" :text cava )
+
+      )
+
+       (
+         box :class "volume_bar" :orientation "v" :spacing 20 :space-evenly false :vexpand false :hexpand false
+         (button :onclick "~/.config/eww/music-widget/volumecontroller.sh -o m" :class "vol_icon" :style "color: ${volume_mute == 'true' ? '#ff0000' : '#00ffff'};" {volume_mute == "true" ? "󰝟" : ""})
+         (scale :flipped true :orientation "v"  :max 101 :min 0 :value volume_percent :onchange "~/.config/eww/music-widget/volumecontroller.sh -o s {}" )
+       )
+
+  )
+
+)
+
+(
+  defwindow music-widget
+  :monitor 0
+  :geometry (geometry :x "5px" :y "5px" :width "450px" :height "120px")
+  :wm-ignore true
+  (music-widget)
+)
