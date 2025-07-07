@@ -45,7 +45,7 @@
 (
   defwindow music-widget
   :monitor 0
-  :geometry (geometry :x "5px" :y "5px" :width "450px" :height "120px")
+  :geometry (geometry :x "5px" :y "5px" :width "440px" :height "120px")
   :wm-ignore true
   (music-widget)
 )

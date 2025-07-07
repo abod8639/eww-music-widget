@@ -78,4 +78,7 @@ To use this widget, you need the following software installed:
     eww -c close music-widget --toggle
     ```
 
-The widget will automatically display information from any active MPRIS-compatible player (e.g., Spotify,VLC,Firefox,Chrome).
+The widget will automatically display information from any active MPRIS-compatible player (e.g.,VLC,Firefox,Chrome).
+
+
+## Designed with care and love by Dexter

@@ -1,7 +1,7 @@
 #!/bin/bash
 cava -p <(cat <<EOF
 [general]
-bars = 25
+bars = 21
 [output]
 method = raw
 raw_target = /dev/stdout
