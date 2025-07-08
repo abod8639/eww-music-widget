@@ -35,11 +35,12 @@
     )
 
        (
-         box :class "volume_bar" :orientation "v" 
-                                 :spacing 20 
-                                 :space-evenly false
-                                 :vexpand false 
-                                 :hexpand false
+         box :class "volume_bar" 
+                :orientation "v" 
+                :spacing 20 
+                :space-evenly false
+                :vexpand false 
+                :hexpand false
          (
           button :onclick "~/.config/eww/music-widget/volumecontroller.sh -o m" 
                  :class "vol_icon" 
