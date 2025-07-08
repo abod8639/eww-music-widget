@@ -1,67 +1,68 @@
-(defpoll current-song :interval "0.5s" "playerctl metadata --format '{{title}}'")
-(defpoll current-artist :interval "0.5s" "playerctl metadata --format '{{artist}}'")
-(defpoll current-status :interval "0.5s" "playerctl status")
-(defpoll current-position :interval "0.5s" "playerctl position | awk '{printf \"%d:%02d\", int($1/60), int($1%60)}'")
-(defpoll song-position :interval "0.5s" "playerctl position")
-(defpoll song-length :interval "1.0s" "playerctl metadata mpris:length | awk '{print $1 / 1000000}'")
-(defpoll current-cover :interval "0.5s" "~/.config/eww/music-widget/get-cover.sh")
-(defpoll volume_percent :interval "0.5s" "~/.config/eww/music-widget/volumecontroller.sh -o g")
-(defpoll volume_mute :interval "0.5s" "pamixer --get-mute")
+;; --- Listeners & Polls ---
+;; Use `deflisten` with `playerctl --follow` to react to player events
+;; efficiently. When a player quits, `playerctl` exits, and the `|| echo`
+;; part provides a default value, ensuring the UI updates correctly.
+(deflisten song_title :initial "No Music Playing"
+"playerctl metadata --format '{{title}}' --follow || echo 'No Music Playing'")
+
+(deflisten song_artist :initial "Unknown Artist"
+"playerctl metadata --format '{{artist}}' --follow || echo 'Unknown Artist'")
+
+(deflisten player_status :initial "Stopped"
+"playerctl metadata --format '{{status}}' --follow || echo 'Stopped'")
+
+;; Polling is still needed for things that change continuously, like position,
+;; but we can use longer, more efficient intervals.
+(defpoll song_length_s :interval "5s"
+"playerctl metadata mpris:length | awk '{print $1 / 1000000}' || echo 1")
+
+(defpoll song_position_s :interval "1s" "playerctl position || echo 0")
+
+(defpoll formatted_position :interval "1s" "playerctl position -f '{{duration(position)}}' || echo '0:00'")
+
+;; Cover art and volume can also be polled at a slower rate.
+(defpoll cover_art_path :interval "5s" "$HOME/.config/eww/music-widget/get-cover.sh")
+(defpoll volume_percent :interval "2s" "$HOME/.config/eww/music-widget/volumecontroller.sh get")
+(defpoll volume_mute :interval "2s" "pamixer --get-mute")
+
+;; Cava runs as a persistent listener, which is correct.
 (deflisten cava :initial "" "bash $HOME/.config/eww/music-widget/cava.sh")
 
-(
-  defwidget music-widget []
-  (
-    box :class "music-widget" :orientation "h" :space-evenly false
 
-      (box :class "cover-art" :style "background-image: url('${current-cover}');")
+;; --- Widget Definition ---
 
-    (
-      box :class "music-info" :orientation "v" :space-evenly false
-      (label :class "song-title" :text "${current-song}" :limit-width 25)
-      (label :class "artist" :text "${current-artist}" :limit-width 25)
+(defwidget music-widget []
+  (box :class "music-widget" :orientation "h" :space-evenly false
+    (box :class "cover-art" :style "background-image: url('${cover_art_path}');")
+    (box :class "music-info" :orientation "v" :space-evenly false
+      (label :class "song-title" :text song_title :limit-width 25)
+      (label :class "artist" :text song_artist :limit-width 25)
       
-      (
-       box :class "controls" :orientation "h"
+      (box :class "controls" :orientation "h"
         (button :onclick "playerctl previous" "󰒮")
-        (button :onclick "playerctl play-pause" {current-status == "Playing" ? "󰏤" : "󰐊"})
+        (button :onclick "playerctl play-pause" {player_status == "Playing" ? "󰏤" : "󰐊"})
         (button :onclick "playerctl next" "󰒭")
       )
-
-      (label :class "position" :text "${current-position}")
-      (scale :class "progress-bar" :min 0 :max {song-length} :value {song-position} :onchange "playerctl position {}")
-      (label :class "cava-visualizer" :text cava )
-
+      
+      (label :class "position" :text formatted_position)
+      (scale :class "progress-bar" :min 0 :max song_length_s :value song_position_s :onchange "playerctl position {}")
+      (label :class "cava-visualizer" :text cava)
     )
+    
+    (box :class "volume_bar" :orientation "v" :spacing 20 :space-evenly false :vexpand false :hexpand false
+      (button :onclick "$HOME/.config/eww/music-widget/volumecontroller.sh mute"
+        :class "vol_icon"
+        :style "color: ${volume_mute == 'true' ? '#ff00ff' : '#00ffff'};"
+      {volume_mute == "true" ? "󰝟" : ""})
+      (scale :flipped true :orientation "v" :max 100 :min 0 :value {volume_percent}
+      :onchange "$HOME/.config/eww/music-widget/volumecontroller.sh set {}")
+    )
+  ))
 
-       (
-         box :class "volume_bar" 
-                :orientation "v" 
-                :spacing 20 
-                :space-evenly false
-                :vexpand false 
-                :hexpand false
-         (
-          button :onclick "~/.config/eww/music-widget/volumecontroller.sh -o m" 
-                 :class "vol_icon" 
-                 :style "color: ${volume_mute == 'true' ? '#ff0000' : '#00ffff'};"
-                                 {volume_mute == "true" ?   "󰝟"       :     ""}
-         )
-           (
-            scale  :flipped true 
-                   :orientation "v"  
-                   :max 100 
-                   :min 0 
-                   :value volume_percent 
-                   :onchange "~/.config/eww/music-widget/volumecontroller.sh -o s {}" 
-           )
-       )
-  )
 
-)
+;; --- Window Definition ---
 
-(
-  defwindow music-widget
+(defwindow music-widget
   :monitor 0
   :geometry (geometry :x "5px" :y "5px" :width "440px" :height "120px")
   :wm-ignore true

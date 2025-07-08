@@ -1,14 +1,12 @@
-
-
 /* Variables */
 $bg-color: rgba(10, 5, 30, 0.85);
-$primary-neon: #00ffff;   //* Cyan    */
-$secondary-neon: #ff00ff; //* Magenta */
+$primary-neon: #00ffff;   /* Cyan    */
+$secondary-neon: #ff00ff; /* Magenta */
 $text-color: #e0e0e0;
 $font-family: "JetBrains Mono Nerd Font";
 
 .music-widget {
-  background-color: rgba( $bg-color,0.7);
+  background-color: $bg-color;
   border-radius: 10px;
   padding: 10px;
   color: $text-color;
@@ -147,4 +145,3 @@ $font-family: "JetBrains Mono Nerd Font";
   margin-top: 10px;
   text-shadow: 0 0 3px $primary-neon;
 }
-
