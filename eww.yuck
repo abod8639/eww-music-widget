@@ -3,7 +3,7 @@
 (defpoll current-status :interval "0.5s" "playerctl status")
 (defpoll current-position :interval "0.5s" "playerctl position | awk '{printf \"%d:%02d\", int($1/60), int($1%60)}'")
 (defpoll song-position :interval "0.5s" "playerctl position")
-(defpoll song-length :interval "0.5s" "playerctl metadata mpris:length | awk '{print $1 / 1000000}'")
+(defpoll song-length :interval "1.0s" "playerctl metadata mpris:length | awk '{print $1 / 1000000}'")
 (defpoll current-cover :interval "0.5s" "~/.config/eww/music-widget/get-cover.sh")
 (defpoll volume_percent :interval "0.5s" "~/.config/eww/music-widget/volumecontroller.sh -o g")
 (defpoll volume_mute :interval "0.5s" "pamixer --get-mute")
@@ -14,7 +14,8 @@
   (
     box :class "music-widget" :orientation "h" :space-evenly false
 
-    (box :class "cover-art" :style "background-image: url('${current-cover}');")
+      (box :class "cover-art" :style "background-image: url('${current-cover}');")
+
     (
       box :class "music-info" :orientation "v" :space-evenly false
       (label :class "song-title" :text "${current-song}" :limit-width 25)
@@ -31,12 +32,28 @@
       (scale :class "progress-bar" :min 0 :max {song-length} :value {song-position} :onchange "playerctl position {}")
       (label :class "cava-visualizer" :text cava )
 
-      )
+    )
 
        (
-         box :class "volume_bar" :orientation "v" :spacing 20 :space-evenly false :vexpand false :hexpand false
-         (button :onclick "~/.config/eww/music-widget/volumecontroller.sh -o m" :class "vol_icon" :style "color: ${volume_mute == 'true' ? '#ff0000' : '#00ffff'};" {volume_mute == "true" ? "󰝟" : ""})
-         (scale :flipped true :orientation "v"  :max 101 :min 0 :value volume_percent :onchange "~/.config/eww/music-widget/volumecontroller.sh -o s {}" )
+         box :class "volume_bar" :orientation "v" 
+                                 :spacing 20 
+                                 :space-evenly false
+                                 :vexpand false 
+                                 :hexpand false
+         (
+          button :onclick "~/.config/eww/music-widget/volumecontroller.sh -o m" 
+                 :class "vol_icon" 
+                 :style "color: ${volume_mute == 'true' ? '#ff0000' : '#00ffff'};"
+                                 {volume_mute == "true" ?   "󰝟"       :     ""}
+         )
+           (
+            scale  :flipped true 
+                   :orientation "v"  
+                   :max 100 
+                   :min 0 
+                   :value volume_percent 
+                   :onchange "~/.config/eww/music-widget/volumecontroller.sh -o s {}" 
+           )
        )
   )
 
