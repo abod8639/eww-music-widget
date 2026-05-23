@@ -52,17 +52,24 @@ $padding: 16px;
 }
 
 .visualizer-container {
-  margin-bottom: 8px;
-  min-height: 20px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 10px;
+  min-height: 18px;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.08), 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .cava-visualizer {
   font-family: "monospace";
   font-size: 10px;
   letter-spacing: 2px;
-  color: $secondary-accent;
-  text-shadow: 0 0 8px rgba($secondary-accent, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 6px rgba(0, 229, 255, 0.7), 0 0 12px rgba(176, 0, 255, 0.5);
 }
+
 
 .progress-container {
   margin-bottom: 12px;
