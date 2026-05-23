@@ -35,9 +35,7 @@
       (label :class "song-title" :text song_title :halign "start")
       (label :class "artist" :text song_artist :halign "start")
       
-      (box :class "visualizer-container" :halign "start"
-        (label :class "cava-visualizer" :text cava)
-      )
+
 
       (box :class "progress-container" :orientation "v" :space-evenly false
         (label :class "position" :text formatted_position :halign "start")
@@ -48,11 +46,18 @@
                :onchange "playerctl position {}")
       )
 
+
+
       (box :class "controls" :orientation "h" :space-evenly false :halign "center" :spacing 15
         (button :onclick "playerctl previous" :tooltip "Previous" "󰒮")
         (button :onclick "playerctl play-pause" :tooltip "Play/Pause" :class "play-btn" {player_status == "Playing" ? "󰏤" : "󰐊"})
         (button :onclick "playerctl next" :tooltip "Next" "󰒭")
       )
+
+      (box :class "visualizer-container" :halign "start"
+        (label :class "cava-visualizer" :text cava)
+      )
+
     )
     
     ;; Right: Volume Column
